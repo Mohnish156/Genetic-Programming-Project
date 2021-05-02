@@ -31,11 +31,13 @@ public class GeneticProblem extends GPProblem {
         inputX = parser.getInputX();
         outputY = parser.getOutputY();
 
-        xVariable = Variable.create(config, "X", CommandGene.IntegerClass);
+        xVariable = Variable.create(config, "X", CommandGene.DoubleClass);
 
         config.setPopulationSize(1000);
         config.setGPFitnessEvaluator(new DefaultGPFitnessEvaluator());
-        zero = new Constant(config, CommandGene.IntegerClass, 0);
+        config.setFitnessFunction(new FitnessFunction(inputX,outputY,xVariable));
+        config.setStrictProgramCreation(true);
+        //zero = new Constant(config, CommandGene.IntegerClass, 0);
     }
 
     @Override
@@ -43,15 +45,15 @@ public class GeneticProblem extends GPProblem {
 
         GPConfiguration config = getGPConfiguration();
 
-        Class[] types = {CommandGene.IntegerClass};
+        Class[] types = {CommandGene.DoubleClass};
         Class[][] argTypes = { {} };
 
         CommandGene[][] nodeSets = {
                 {
                     xVariable,
-                    new Add(config, CommandGene.IntegerClass),
-                    new Multiply(config,CommandGene.IntegerClass),
-                    new Terminal(config,CommandGene.IntegerClass,-2.00,2.75,false)
+                    new Add(config, CommandGene.DoubleClass),
+                    new Multiply(config,CommandGene.DoubleClass),
+                    new Terminal(config,CommandGene.DoubleClass,-2.00,2.75,false)
 
                 }
         };
@@ -62,6 +64,10 @@ public class GeneticProblem extends GPProblem {
 
     public static void main(String[] args) throws InvalidConfigurationException {
         GPProblem problem = new GeneticProblem();
+        GPGenotype gp = problem.create();
+        gp.setVerboseOutput(true);
+        gp.evolve(30);
+        gp.outputSolution(gp.getAllTimeBest());
 
     }
 }

@@ -4,12 +4,14 @@ import org.jgap.gp.terminal.Variable;
 
 public class FitnessFunction extends GPFitnessFunction {
 
-    private Integer[] inputX;
-    private Integer[] outputY;
+    private double[] inputX;
+    private double[] outputY;
 
     private Variable xVariable;
 
-    public FitnessFunction(Integer[] input, Integer[] output, Variable x) {
+    private static Object[] NO_ARGS = new Object[0];
+
+    public FitnessFunction(double[] input, double[] output, Variable x) {
         inputX = input;
         outputY = output;
         xVariable = x;
@@ -18,16 +20,13 @@ public class FitnessFunction extends GPFitnessFunction {
     @Override
     protected double evaluate(IGPProgram igpProgram) {
         double result = 0;
-        long longResult = 0;
 
         for(int i=0; i<inputX.length; i++){
             xVariable.set(inputX[i]);
 
-            long value = igpProgram.execute_int(0,null);
-            longResult += Math.abs(value - outputY[i]);
+            double value = igpProgram.execute_double(0,NO_ARGS);
+            result += Math.abs(value - outputY[i]);
         }
-
-        result = longResult;
 
         return result;
     }
