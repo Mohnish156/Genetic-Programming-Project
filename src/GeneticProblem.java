@@ -2,9 +2,9 @@
 import org.jgap.InvalidConfigurationException;
 import org.jgap.gp.CommandGene;
 import org.jgap.gp.GPProblem;
-import org.jgap.gp.function.Add;
-import org.jgap.gp.function.Multiply;
+import org.jgap.gp.function.*;
 import org.jgap.gp.impl.DefaultGPFitnessEvaluator;
+import org.jgap.gp.impl.DeltaGPFitnessEvaluator;
 import org.jgap.gp.impl.GPConfiguration;
 import org.jgap.gp.impl.GPGenotype;
 import org.jgap.gp.terminal.Constant;
@@ -17,10 +17,14 @@ import java.util.Scanner;
 public class GeneticProblem extends GPProblem {
 
 
-    private double[] inputX = new double[20];
-    private double[] outputY = new double[20];
+    private static final int maxCrossoverDepth = 10;
+    private static final int maxInitDepth = 6;
+    private static final int populationSize = 1000;
+    private static final int evolutions = 1000;
 
-    private Constant zero;
+    private double[] inputX;
+    private double[] outputY;
+
     private Variable xVariable;
 
     public GeneticProblem() throws InvalidConfigurationException {
@@ -33,11 +37,13 @@ public class GeneticProblem extends GPProblem {
 
         xVariable = Variable.create(config, "X", CommandGene.DoubleClass);
 
-        config.setPopulationSize(1000);
-        config.setGPFitnessEvaluator(new DefaultGPFitnessEvaluator());
+        config.setGPFitnessEvaluator(new DeltaGPFitnessEvaluator());
+        config.setMaxInitDepth(maxInitDepth);
+        config.setPopulationSize(populationSize);
+        config.setMaxCrossoverDepth(maxCrossoverDepth);
         config.setFitnessFunction(new FitnessFunction(inputX,outputY,xVariable));
         config.setStrictProgramCreation(true);
-        //zero = new Constant(config, CommandGene.IntegerClass, 0);
+
     }
 
     @Override
@@ -53,8 +59,9 @@ public class GeneticProblem extends GPProblem {
                     xVariable,
                     new Add(config, CommandGene.DoubleClass),
                     new Multiply(config,CommandGene.DoubleClass),
-                    new Terminal(config,CommandGene.DoubleClass,-2.00,2.75,false)
-
+                    new Subtract(config,CommandGene.DoubleClass),
+                    new Pow(config,CommandGene.DoubleClass),
+                    new Terminal(config,CommandGene.DoubleClass,0.0,10.0,false)
                 }
         };
 
@@ -66,7 +73,7 @@ public class GeneticProblem extends GPProblem {
         GPProblem problem = new GeneticProblem();
         GPGenotype gp = problem.create();
         gp.setVerboseOutput(true);
-        gp.evolve(30);
+        gp.evolve(evolutions);
         gp.outputSolution(gp.getAllTimeBest());
 
     }

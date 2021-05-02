@@ -18,16 +18,16 @@ public class FitnessFunction extends GPFitnessFunction {
     }
 
     @Override
-    protected double evaluate(IGPProgram igpProgram) {
-        double result = 0;
+    protected double evaluate(final IGPProgram igpProgram) {
+        double ans = 0.;
 
         for(int i=0; i<inputX.length; i++){
             xVariable.set(inputX[i]);
 
-            double value = igpProgram.execute_double(0,NO_ARGS);
-            result += Math.abs(value - outputY[i]);
-        }
+            double value =  igpProgram.execute_double(0,NO_ARGS);
+            ans += Math.abs(value - outputY[i]);
 
-        return result;
+        }
+        return ans;
     }
 }
