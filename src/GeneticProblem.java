@@ -61,7 +61,7 @@ public class GeneticProblem extends GPProblem {
                     new Multiply(config,CommandGene.DoubleClass),
                     new Subtract(config,CommandGene.DoubleClass),
                     new Pow(config,CommandGene.DoubleClass),
-                    new Terminal(config,CommandGene.DoubleClass,0.0,10.0,false)
+                    new Terminal(config,CommandGene.DoubleClass,1,37,false)
                 }
         };
 
